@@ -96,6 +96,16 @@ h2{
   font-size: 1.2rem;
   cursor: pointer;
 }
+.reset{
+  background: #fff;
+  padding: 0.5rem 2rem;
+  border-radius: 50px;
+  margin: 10px;
+  border: 1px solid #5acfc9;
+  color: #5acfc9;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
 
 .corrects{
     display: flex;
@@ -137,7 +147,7 @@ h2{
     font-size: 5rem;
     cursor: pointer;
 }
-.reset{
+.invisible{
     visibility: hidden;
 }
 .correct{

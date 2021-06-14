@@ -23,11 +23,15 @@
             <span class="datum">Difficulty: {{items[index]['difficulty']}}</span>
         </div>
         <!-- popup -->
-        <div class="popup" @click="next"  :class="{'reset': popup == 0 }">
+        <div class="popup" @click="next"  :class="{'invisible': popup == 0 }">
             <div class="check" :class="{'correct': popup == 1, 'incorrect': popup ==2}" v-show="index < 9">{{icon}}</div>
             <button class="next" v-show="index < 9">Next</button>
         </div>
-        <div class="finish" v-show="index == 9"><span>Correct Answers:</span><span> {{correctA}}/10</span></div>
+        <div class="finish" v-show="index == 9">
+            <span>Correct Answers:</span>
+            <span>{{correctA}}/10</span>
+            <button class="reset" @click="reset">Reset</button>
+        </div>
     </div>
 </template>
 
@@ -71,6 +75,10 @@ export default {
         next(){
             this.index++;
             this.popup = 0;
+        },
+        reset(){
+            this.index = 0;
+            this.correctA = 0;
         }
   }
 }
