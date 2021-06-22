@@ -5,18 +5,24 @@
         </div>
         <div class="question">{{items[index]['question']}}</div>
 
-        <div  :for="key" v-for="answer,key of items[index]['incorrect_answers']" :key="key">
+        <!-- <div  :for="key" v-for="answer,key of items[index]['incorrect_answers']" :key="key">
+        
             <div class="answer hover" 
             value="wrong" 
             @click="answered">
-            {{answer }} 
+            {{ answer }}
+            </div>
+            
+         </div> -->
+     
+         <div v-for="(answer,key ) in answers[index]">
+              <div class="answer hover" 
+                    value="wrong" 
+                    @click="answered">
+            {{ answer }}
             </div>
          </div>
-        <div class="answer hover" 
-        value="right"
-        @click="answered">
-            {{items[index]['correct_answer'] }}
-        </div>
+
         <div class="info">
             <span class="datum">{{items[index]['category']}}</span>
             <span class="datum">Type: {{items[index]['type']}}</span>
@@ -47,6 +53,8 @@ export default {
       correctA:0,
       popup: 0,
       icon: '',
+      answers:[],
+      question: '' ,
       
       items: this.data
           }
@@ -59,14 +67,14 @@ export default {
         answered(e){
         this.selected = e.target.attributes.value.value;
 
-        if(this.selected == "right"){
-            this.correctA++;
-            this.popup = 1;
-            this.icon = this.unescape("&check;")
-        }else{
-            this.popup = 2;
-            this.icon = this.unescape("&#x2E3;");
-        }
+            if(this.selected == "right"){
+                this.correctA++;
+                this.popup = 1;
+                this.icon = this.unescape("&check;")
+            }else{
+                this.popup = 2;
+                this.icon = this.unescape("&#x2E3;");
+            }
 
         },
         popreset(){
@@ -79,7 +87,14 @@ export default {
         reset(){
             this.index = 0;
             this.correctA = 0;
-        }
+        },
+  },
+    created(){
+        
+        const { incorrect_answers, correct_answer, question} = this.items[this.index];
+        this.answers[this.index] = [...incorrect_answers, correct_answer]       
+        this.answers[this.index].sort(() => Math.random() - 0.5);
+        this.question = question.replace('&quot;', '"')
   }
 }
 </script>
