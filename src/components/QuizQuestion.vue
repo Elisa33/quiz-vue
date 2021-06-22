@@ -1,106 +1,55 @@
-<template lang="">
-    <div class="container">
-        <div class="title">
-            <h2>Question {{index +1}}/10</h2>
-        </div>
-        <div class="question">{{items[index]['question']}}</div>
+<template>
+  <div>
+    <div class="question">{{ question }}</div>
 
-        <!-- <div  :for="key" v-for="answer,key of items[index]['incorrect_answers']" :key="key">
-        
-            <div class="answer hover" 
-            value="wrong" 
-            @click="answered">
-            {{ answer }}
-            </div>
-            
-         </div> -->
-     
-         <div v-for="(answer,key ) in answers[index]">
-              <div class="answer hover" 
-                    value="wrong" 
-                    @click="answered">
-            {{ answer }}
-            </div>
-         </div>
-
-        <div class="info">
-            <span class="datum">{{items[index]['category']}}</span>
-            <span class="datum">Type: {{items[index]['type']}}</span>
-            <span class="datum">Difficulty: {{items[index]['difficulty']}}</span>
-        </div>
-        <!-- popup -->
-        <div class="popup" @click="next"  :class="{'invisible': popup == 0 }">
-            <div class="check" :class="{'correct': popup == 1, 'incorrect': popup ==2}" v-show="index < 9">{{icon}}</div>
-            <button class="next" v-show="index < 9">Next</button>
-        </div>
-        <div class="finish" v-show="index == 9">
-            <span>Correct Answers:</span>
-            <span>{{correctA}}/10</span>
-            <button class="reset" @click="reset">Reset</button>
-        </div>
+    <div :key="answer" v-for="answer in answers">
+      <div class="answer hover" :value="answer" @click="answered">
+        {{ answer }}
+      </div>
     </div>
+
+    <div class="info">
+      <span class="datum">{{ category }}</span>
+      <span class="datum">Type: {{ type }}</span>
+      <span class="datum">Difficulty: {{ difficulty }}</span>
+    </div>
+  </div>
 </template>
-
 <script>
+import { shuffle } from "../utils/shuffle";
+
 export default {
-    name: 'QuizQuestion',
-    props:['data'],
-    data(){
-    
-    return{
-      index: 0,
-      selected:'',
-      correctA:0,
-      popup: 0,
-      icon: '',
-      answers:[],
-      question: '' ,
-      
-      items: this.data
-          }
+  name: "QuizQuestion",
+  props: [
+    "id",
+    "question",
+    "category",
+    "type",
+    "difficulty",
+    "correctAnswer",
+    "incorrectAnswers",
+  ],
+  data() {
+    return {
+      answers: [],
+    };
   },
-     methods:{
-        unescape(string) {
-            this.icon = document.querySelector(".check");
-            this.icon.innerHTML = string;
-        },
-        answered(e){
-        this.selected = e.target.attributes.value.value;
-
-            if(this.selected == "right"){
-                this.correctA++;
-                this.popup = 1;
-                this.icon = this.unescape("&check;")
-            }else{
-                this.popup = 2;
-                this.icon = this.unescape("&#x2E3;");
-            }
-
-        },
-        popreset(){
-            this.popup = 0;
-        },
-        next(){
-            this.index++;
-            this.popup = 0;
-        },
-        reset(){
-            this.index = 0;
-            this.correctA = 0;
-        },
+  created() {
+    this.answers = shuffle([...this.incorrectAnswers, this.correctAnswer]);
   },
-    created(){
-        
-        const { incorrect_answers, correct_answer, question} = this.items[this.index];
-        this.answers[this.index] = [...incorrect_answers, correct_answer]       
-        this.answers[this.index].sort(() => Math.random() - 0.5);
-        this.question = question.replace('&quot;', '"')
-  }
-}
+  methods: {
+    unescape(string) {
+      this.icon = document.querySelector(".check");
+      this.icon.innerHTML = string;
+    },
+    answered(event) {
+      this.selected = event.target.attributes.value.value;
+      const correct = (this.selected === this.correctAnswer);
+
+      this.$emit('answered', correct);
+    },
+  },
+};
 </script>
-
-<style lang="">
-
-
-    
+<style>
 </style>
